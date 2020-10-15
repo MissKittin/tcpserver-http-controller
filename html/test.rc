@@ -1,0 +1,27 @@
+# Sample page for rendering
+
+cat << EOF > "${tempfile}"
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Rendering test</title>
+		<meta charset="utf-8">
+		<link rel="icon" href="/favicon.ico">
+		<style>
+			body {
+				margin: 0;
+				padding: 20px;
+				background-color: #000000;
+				color: #ffffff;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>Rendered page</h1>
+		<h3>Write get arguments to the address bar, eg:</h3>
+		<h3>http://localhost:8080/test?parameterA=valueA</h3>
+		<br>
+		Received get string: $GET
+	</body>
+</html>
+EOF

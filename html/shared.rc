@@ -1,0 +1,53 @@
+### Share files via http
+### (simple controller demo)
+
+# patch tempfile variable
+tempfile="$(readlink -f "${tempfile}")"
+
+# go to the directory
+pwd="$(pwd)"
+cd ".${REQUEST_URI}"
+
+cat << EOF > "${tempfile}"
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Rendering test</title>
+		<meta charset="utf-8">
+		<link rel="icon" href="/favicon.ico">
+		<style>
+			body {
+				margin: 0;
+				padding: 20px;
+				background-color: #000000;
+				color: #ffffff;
+			}
+			a, a:hover, a:visited {
+				text-decoration: none;
+				color: #ffffff;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>Shared files</h1>
+EOF
+
+for i in *; do
+	if [ "${i}" = '*' ]; then
+		echo '<h3>Empty</h3>' >> "${tempfile}"
+		break
+	fi
+
+	[ -f "./${i}" ] && link_prefix='[f] '
+	[ -d "./${i}" ] && link_prefix='[d] '
+
+	echo '<a href="'"${REQUEST_URI}/${i}"'">'"${link_prefix}${i}"'</a><br>' >> "${tempfile}"
+done
+
+cat << EOF >> "${tempfile}"
+	</body>
+</html>
+EOF
+
+cd "${pwd}"
+unset pwd

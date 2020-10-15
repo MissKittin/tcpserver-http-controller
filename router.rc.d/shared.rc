@@ -1,0 +1,26 @@
+# /shared routing
+if [ -d './shared' ]; then
+	# shared directory exists - routing is valid
+
+	# sanitize URI
+	REQUEST_URI="$(echo -n "${REQUEST_URI}" | sed 's/\.\.//g')"
+
+	# convert %20 to spaces
+	REQUEST_URI="$(echo -n "${REQUEST_URI}" | sed 's/%20/ /g')"
+
+	if [ -f ".${REQUEST_URI}" ]; then
+		# send file
+		printFile ".${REQUEST_URI}" "$(file --mime-type ".${REQUEST_URI}" | awk '{print $2}')" '200'
+	elif [ -d ".${REQUEST_URI}" ]; then
+		# list directory
+		renderFile './html/shared.rc' 'text/html' '200'
+	else
+		# not found
+		log " e output .${REQUEST_URI} 404"
+		printFile './html/404.html' 'text/html' '404'
+	fi
+else
+	# not found
+	log ' e filesharing disabled 404'
+	printFile './html/404.html' 'text/html' '404'
+fi

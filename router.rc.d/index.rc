@@ -1,0 +1,2 @@
+# index routing
+printFile './html/index.html' 'text/html' '200'

@@ -1,0 +1,16 @@
+# tcpserver http controller - settings
+
+# tcpserver settings
+tcpserver_ip_address='0'
+tcpserver_port='8080'
+tcpserver_command='tcpserver'
+tcpserver_additional_parameters=''
+
+# Temporary directory (tmpfs recommended)
+temporary_directory="./tmp"
+temporary_directory_clear_on_start='true'
+
+# Log settings
+log_enabled='true'
+log_date_format='+%Y.%M.%d %H:%M:%S'
+log_file='' # log to console if empty
