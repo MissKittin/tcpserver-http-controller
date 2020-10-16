@@ -5,7 +5,7 @@ if [ -f ".${REQUEST_URI}" ]; then
 elif [ -f ".${REQUEST_URI}.gz" ]; then
 	# send file with gzip headers
 	log " i sending gzipped file .${REQUEST_URI}.gz"
-	printFile ".${REQUEST_URI}.gz" "$(file --mime-type ".${REQUEST_URI}" | awk '{print $2}')" '200' '3600' 'gzip'
+	printFile ".${REQUEST_URI}.gz" "$(file -b --mime-type ".${REQUEST_URI}")" '200' '3600' 'gzip'
 else
 	# not found
 	printFile './html/404.html' 'text/html' '404'
