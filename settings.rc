@@ -1,5 +1,10 @@
 # tcpserver http controller - settings
 
+# controller script settings
+limit_execution_time='true' # exit controller on timeout
+timeout_command='timeout'
+max_execution_time='30' # seconds
+
 # tcpserver settings
 tcpserver_ip_address='0'
 tcpserver_port='8080'

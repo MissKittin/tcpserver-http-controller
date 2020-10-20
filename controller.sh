@@ -31,21 +31,19 @@ if [ ! "${1}" = 'start' ]; then
 	[ "${log_file}" = '' ] && echo " [$(date "${log_date_format}")] Starting tcpserver..." || echo " [$(date "${log_date_format}")] Starting tcpserver..." >> ${log_file}
 	[ "${log_file}" = '' ] && echo '' || echo '' >> ${log_file}
 
+	${limit_execution_time} && timeout_command="${timeout_command} ${max_execution_time}"
+
 	if [ "${log_file}" = '' ]; then
-		exec ${tcpserver_command} ${tcpserver_additional_parameters} "${tcpserver_ip_address}" "${tcpserver_port}" "${0}" 'start' || exit 1
+		exec ${tcpserver_command} ${tcpserver_additional_parameters} "${tcpserver_ip_address}" "${tcpserver_port}" ${timeout_command} "${0}" 'start' || exit 1
 	else
-		exec ${tcpserver_command} ${tcpserver_additional_parameters} "${tcpserver_ip_address}" "${tcpserver_port}" "${0}" 'start' >> ${log_file} 2>&1 || exit 1
+		exec ${tcpserver_command} ${tcpserver_additional_parameters} "${tcpserver_ip_address}" "${tcpserver_port}" ${timeout_command} "${0}" 'start' >> ${log_file} 2>&1 || exit 1
 	fi
 fi
 
 # Functions
 getURI()
 {
-	if [ "${1}" = 'GET' ] || [ "${1}" = 'POST' ]; then
-		echo -n "${2}"
-		return 0
-	fi
-	return 1
+	echo -n "${2}"
 }
 echoText()
 {
@@ -62,7 +60,7 @@ printFile()
 	# send server error if file not found
 	if [ ! -f "${1}" ]; then
 		log " e configuration error - ${1} not exists"
-		echoText 'Configuration error!' 'text/plain' '404'
+		echoText '' 'text/plain' '500'
 		return 1
 	fi
 
@@ -96,7 +94,7 @@ renderFile()
 	# send server error if file not found
 	if [ ! -f "${1}" ]; then
 		log " e configuration error - ${1} not exists"
-		echoText 'Configuration error!' 'text/plain' '404'
+		echoText '' 'text/plain' '500'
 		return 1
 	fi
 
@@ -123,15 +121,26 @@ log()
 # Variables
 REQUEST_URI="$(
 	while read line; do
-		getURI ${line} && break
+		getURI ${line}
+		break
 	done
-)"
+)"; unset getURI
 GET="${REQUEST_URI#*\?}"
 REQUEST_URI="${REQUEST_URI%\?*}"
 [ "${GET}" = "${REQUEST_URI}" ] && GET=''
 
 # Log
-log "request from ${TCPREMOTEIP} to ${REQUEST_URI}"
+log "request from ${TCPREMOTEIP}:${TCPREMOTEPORT} to '${REQUEST_URI}'"
+
+# Log timeout
+if ${limit_execution_time}; then
+	onTimeout()
+	{
+		log " e request from ${TCPREMOTEIP}:${TCPREMOTEPORT} timeout"
+		exit 0
+	}
+	trap onTimeout TERM
+fi
 
 # Routing
 . ./router.rc

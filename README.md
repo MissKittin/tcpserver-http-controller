@@ -3,6 +3,7 @@ Made for fun
 
 ### Requirements
 * `tcpserver` (in debian `ucspi-tcp` package)
+* `timeout` (to disable this, set `limit_execution_time` to false)
 * `dirname`
 * `readlink`
 * `stat`
@@ -70,3 +71,19 @@ Made for fun
 9) start tcpserver-http-controller
 10) import `rootCA.pem` into your browser
 11) paste in address bar: `https://localhost:8443`
+
+### Merging logs
+In stunnel configuration add below the pid parameter:
+```
+syslog = no
+output = /path/to/tcpserver.log
+```
+
+### Switching user
+In stunnel configuration add below the pid parameter:
+```
+setuid = 1234
+setgid = 1234
+```
+where `1234` is your user uid and gid.  
+Remember to chown the stunnel pid file and output log.
