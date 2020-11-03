@@ -119,12 +119,7 @@ log()
 }
 
 # Variables
-REQUEST_URI="$(
-	while read line; do
-		getURI ${line}
-		break
-	done
-)"; unset getURI
+read REQUEST_URI; REQUEST_URI="$(getURI ${REQUEST_URI})"; unset getURI
 GET="${REQUEST_URI#*\?}"
 REQUEST_URI="${REQUEST_URI%\?*}"
 [ "${GET}" = "${REQUEST_URI}" ] && GET=''
