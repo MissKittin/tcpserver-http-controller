@@ -1,14 +1,15 @@
 ### Share files via http
 ### (simple controller demo)
 
-# patch tempfile variable
-tempfile="$(readlink -f "${tempfile}")"
+# patch tempFile variable
+tempFile="$(readlink -f "${tempFile}")"
 
 # go to the directory
+REQUEST_URI="${REQUEST_URI%\?*}"
 pwd="$(pwd)"
-cd ".${REQUEST_URI}"
+cd "./resources${REQUEST_URI}"
 
-cat << EOF > "${tempfile}"
+readStream << EOF > "${tempFile}"
 <!DOCTYPE html>
 <html>
 	<head>
@@ -34,17 +35,17 @@ EOF
 
 for i in *; do
 	if [ "${i}" = '*' ]; then
-		echo '<h3>Empty</h3>' >> "${tempfile}"
+		echo '<h3>Empty</h3>' >> "${tempFile}"
 		break
 	fi
 
 	[ -f "./${i}" ] && link_prefix='[f] '
 	[ -d "./${i}" ] && link_prefix='[d] '
 
-	echo '<a href="'"${REQUEST_URI}/${i}"'">'"${link_prefix}${i}"'</a><br>' >> "${tempfile}"
+	echo '<a href="'"${REQUEST_URI}/${i}"'">'"${link_prefix}${i}"'</a><br>' >> "${tempFile}"
 done
 
-cat << EOF >> "${tempfile}"
+readStream << EOF >> "${tempFile}"
 	</body>
 </html>
 EOF

@@ -1,6 +1,8 @@
 # Sample page for rendering
 
-cat << EOF > "${tempfile}"
+[ "${REQUEST_URI#*\?}" = "${REQUEST_URI%\?*}" ] && getString='' || getString="${REQUEST_URI#*\?}"
+
+readStream << EOF > "${tempFile}"
 <!DOCTYPE html>
 <html>
 	<head>
@@ -19,9 +21,9 @@ cat << EOF > "${tempfile}"
 	<body>
 		<h1>Rendered page</h1>
 		<h3>Write get arguments to the address bar, eg:</h3>
-		<h3>http://localhost:8080/test?parameterA=valueA</h3>
+		<h3><span id="location"><script>document.getElementById('location').innerHTML=window.location.origin;</script></span>/test?parameterA=valueA</h3>
 		<br>
-		Received get string: $GET
+		Received get string: ${getString}
 	</body>
 </html>
 EOF

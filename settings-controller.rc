@@ -1,0 +1,17 @@
+# tcpserver http controller - settings
+
+# Controller settings [shared with settings-tcpserver.rc]
+limit_execution_time='true' # exit controller on timeout
+max_execution_time='30' # seconds
+
+# Controller settings
+http_header_server_id='Dummy server'
+http_header_x_frame_options_deny='true'
+
+# Temporary directory (tmpfs recommended) [shared with settings-tcpserver.rc]
+temporary_directory='./tmp'
+
+# Log settings [shared with settings-controller.rc]
+log_enabled='true'
+log_date_format='+%Y.%M.%d %H:%M:%S'
+log_file='' # log to console if empty

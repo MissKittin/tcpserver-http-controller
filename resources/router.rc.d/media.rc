@@ -1,0 +1,13 @@
+# /resources/media routing
+REQUEST_URI="${REQUEST_URI%\?*}"
+if [ -f ".${REQUEST_URI}" ]; then
+	# send file
+	printFile ".${REQUEST_URI}" "$(file -b --mime-type ".${REQUEST_URI}")" '200' '3600' '' 'use-cat'
+elif [ -f ".${REQUEST_URI}.gz" ]; then
+	# send file with gzip headers
+	log " i sending gzipped file .${REQUEST_URI}.gz"
+	printFile ".${REQUEST_URI}.gz" "$(file -b --mime-type ".${REQUEST_URI}")" '200' '3600' 'gzip' 'use-cat'
+else
+	# not found
+	printFile './resources/html/404.html' 'text/html' '404'
+fi

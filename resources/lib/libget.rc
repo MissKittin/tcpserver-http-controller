@@ -1,0 +1,54 @@
+extractGetValue()
+{
+	# Extract one GET value from string
+	# ${1} -> get string
+	# ${2} -> get key
+	# usage: arg="$(extractGetValue "${getString}" 'argKey')" && echo "argKey -> ${arg}" || echo 'argKey not set'
+	# sed required
+
+	extractGetValue_print_S1() { echo -n "${1}"; }
+	extractGetValue_print_S2() { echo -n "${2}"; }
+
+	local getElement
+	local keyFound='false'
+
+	for getElement in $(echo -n ${1:1} | sed 's/&/ /g'); do
+		getElement="$(echo -n ${getElement} | sed 's/=/ /g')"
+		if [ "$(extractGetValue_print_S1 ${getElement})" = "${2}" ]; then
+			echo "$(extractGetValue_print_S2 ${getElement})"
+			keyFound='true'
+			break
+		fi
+	done
+
+	unset extractGetValue_print_S1
+	unset extractGetValue_print_S2
+
+	"${keyFound}" && return '0' || return '1'
+}
+get2array()
+{
+	# Convert GET string to bash array
+	# ${1} -> get string
+	# ${2} -> GET | POST -> default is GET if not specified
+	# output: $GET array
+	# usage: get2array "${getString}" 'GET'
+	#	[[ -v 'GET[argKey]' ]] && echo "argKey -> ${GET[argKey]}" || echo 'argKey not set'
+	# sed and bash required
+
+	get2array_print_S1() { echo -n "${1}"; }
+	get2array_print_S2() { echo -n "${2}"; }
+
+	local getElement
+	local getValue
+	[ "${2}" = 'POST' ] && declare -g -A POST || declare -g -A GET # global variable
+
+	for getElement in $(echo -n ${1} | sed 's/&/ /g'); do
+		getElement="$(echo -n ${getElement} | sed 's/=/ /g')"
+		getValue="$(get2array_print_S2 ${getElement})"
+		[ "${2}" = 'POST' ] && POST+=([$(get2array_print_S1 ${getElement})]=${getValue}) || GET+=([$(get2array_print_S1 ${getElement})]=${getValue})
+	done
+
+	unset get2array_print_S1
+	unset get2array_print_S2
+}

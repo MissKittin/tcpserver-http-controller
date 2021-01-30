@@ -1,7 +1,0 @@
-# /favicon.ico routing
-if [ -e './media/favicon.ico' ]; then
-	printFile './media/favicon.ico' 'image/x-icon' '200' '3600'
-else
-	log ' e output /favicon.ico 404'
-	printFile './html/404.html' 'text/html' '404'
-fi

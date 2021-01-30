@@ -1,0 +1,34 @@
+# routing table for resources
+
+case "${REQUEST_URI%\?*}" in
+	# custom routing rules
+	'/test' | '/test/')
+		renderFile './resources/html/test.rc' 'text/html' '200'
+	;;
+	'/test-libget' | '/test-libget/')
+		if [ "${BASH}" = '' ]; then
+			echoText 'Use bash in controller.sh shebang!' 'text/plain' '500'
+		else
+			renderFile './resources/html/test-libget.rc' 'text/html' '200'
+		fi
+	;;
+
+	# additional routing rules
+	/resources/media/?*)
+		. './resources/router.rc.d/resources/media.rc'
+	;;
+	'/shared' | /shared/*)
+		[ -e './resources/router.rc.d/shared.rc' ] && . './resources/router.rc.d/shared.rc' || . './resources/router.rc.d/default_action.rc'
+	;;
+	'/favicon.ico')
+		. './resources/router.rc.d/favicon.rc'
+	;;
+
+	# default routing rules
+	'' | '/')
+		. './resources/router.rc.d/index.rc'
+	;;
+	*)
+		. './resources/router.rc.d/default_action.rc'
+	;;
+esac

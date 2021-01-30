@@ -1,0 +1,46 @@
+# libget.rc test
+# bash required
+
+# include library
+. './resources/lib/libget.rc'
+
+# convert $getString to bash array
+[ "${REQUEST_URI#*\?}" = "${REQUEST_URI%\?*}" ] && getString='' || getString="${REQUEST_URI#*\?}"
+get2array "${getString}" 'GET'
+
+readStream << EOF > "${tempFile}"
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Rendering test - libget</title>
+		<meta charset="utf-8">
+		<link rel="icon" href="/favicon.ico">
+		<style>
+			body {
+				margin: 0;
+				padding: 20px;
+				background-color: #000000;
+				color: #ffffff;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>libGET</h1>
+		<h3>Write get arguments to the address bar, eg:</h3>
+		<h3><span id="location"><script>document.getElementById('location').innerHTML=window.location.origin;</script></span>/test-libget?parameterA=valueA</h3>
+		<br>
+		Received get string: ${getString}<br>
+EOF
+
+if [ ! "${GET[parameterA]}" = '' ]; then
+	echo "parameterA has value: ${GET[parameterA]}" >> "${tempFile}"
+elif [ -v "GET[parameterA]" ]; then
+	echo 'parameterA is empty' >> "${tempFile}"
+else
+	echo 'parameterA is not set' >> "${tempFile}"
+fi
+
+readStream << EOF >> "${tempFile}"
+	</body>
+</html>
+EOF

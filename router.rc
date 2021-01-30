@@ -1,27 +1,4 @@
 # tcpserver http controller - routing table
 
-case ${REQUEST_URI} in
-	# custom routing rules
-	'/test' | '/test/')
-		renderFile './html/test.rc' 'text/html' '200'
-	;;
-
-	# additional routing rules
-	/media/?*)
-		. ./router.rc.d/media.rc
-	;;
-	'/shared' | /shared/*)
-		[ -e './router.rc.d/shared.rc' ] && . ./router.rc.d/shared.rc || . ./router.rc.d/default_action.rc
-	;;
-	'/favicon.ico')
-		. ./router.rc.d/favicon.rc
-	;;
-
-	# default routing rules
-	'' | '/')
-		. ./router.rc.d/index.rc
-	;;
-	*)
-		. ./router.rc.d/default_action.rc
-	;;
-esac
+# Example rules moved to resources dir
+[ -e './resources/router.rc' ] && . './resources/router.rc'

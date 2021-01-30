@@ -2,38 +2,45 @@
 Made for fun
 
 ### Requirements
-* `tcpserver` (in debian `ucspi-tcp` package)
+* `tcpserver` (`ucspi-tcp` package in debian)
 * `timeout` (to disable this, set `limit_execution_time` to false)
-* `dirname`
-* `readlink`
-* `stat`
-* `cat`
-* `mktemp`
+* `readlink` (for converting relative path to absolute)
+* `stat` (used in printFile function for content length reading)
+* `cat` (used in printFile function for binary files)
+* `rm` (cleaning temporary files)
 * `date` (used in log function)
 * `file` (`/media` routing in router.rc, can be removed)
-* `expr` (used for execution time measuring, disabled by default)
+* `expr` (used for measuring execution time, disabled by default)
 
 ### Usage
-* put static html files and dynamic html-shellscripts (`*.rc`) to the `html` directory
-* put media files to the `media` directory
-* edit case in `router.rc` and add your routing code
+* put static html files and dynamic html-shellscripts (`*.rc`) to the `resources/html` directory
+* put media files to the `resources/media` directory
+* edit case in `resources/router.rc` and add your routing code
 * edit `settings.rc`
 * mount tmpfs in the `tmp` directory (not needed but recommended)
-* start server: `./controller.sh`
+* start server: `./tcpserver.sh`
+* or remove `resources` directory and start writing your app
 
 ### Functions
 * **echoText content mime code** send string to the browser
-* **printFile file mime code [cache-time] [gzip]** print static file
+* **printFile file mime code [cache-time] [gzip] [use-cat]** print static file (use-cat for binary files)
 * **renderFile file mime code** render page and print it
 * **log 'message content'** print to console (stderr)
+* **readFile path/to/file** cat replacement for plain text files
+* **readStream << EOF ** cat replacement for streams and pipes
+* **dirNameOf path/to/file** dirname replacement
 
 ### Variables
-* **REQUEST_URI** string
-* **GET** string
+* **REQUEST_URI** string (without domain and with get string)
 
 ### Extras
 * **shared files** share files via http(s)  
-	files to remove: `html/shared`, `router.rc.d/shared.rc`
+	files to remove: `resources/html/shared`, `resources/router.rc.d/shared.rc`
+* **libget** read value from get string or convert getString to array (**bash required**)  
+	files to remove: `resources/lib/libget.rc`
+
+### Measure execution time
+Uncomment lines `6` and `160` in `controller.sh`. Execution time will be saved in logs.
 
 # HTTPS
 **Note: remote ip is always 127.0.0.1 with stunnel accept-connect**
@@ -60,7 +67,7 @@ Made for fun
 	2) `chmod 600 ./server.pem`
 7) configure stunnel:  
 	```
-	pid = /tmp/.stunnel-localhost.pid
+	pid = /tmp/.stunnel-tcpserver.pid
 
 	[localhost]
 	accept = 8443

@@ -1,0 +1,7 @@
+# /favicon.ico routing
+if [ -e './resources/media/favicon.ico' ]; then
+	printFile './resources/media/favicon.ico' 'image/x-icon' '200' '3600' '' 'use-cat'
+else
+	log ' e output /favicon.ico 404'
+	printFile './resources/html/404.html' 'text/html' '404'
+fi

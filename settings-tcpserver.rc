@@ -1,9 +1,9 @@
-# tcpserver http controller - settings
+# tcpserver starter - settings
 
-# controller script settings
+# Controller settings [shared with settings-controller.rc]
 limit_execution_time='true' # exit controller on timeout
-timeout_command='timeout'
 max_execution_time='30' # seconds
+timeout_command='timeout'
 
 # tcpserver settings
 tcpserver_ip_address='0'
@@ -11,11 +11,11 @@ tcpserver_port='8080'
 tcpserver_command='tcpserver'
 tcpserver_additional_parameters=''
 
-# Temporary directory (tmpfs recommended)
-temporary_directory="./tmp"
+# Temporary directory (tmpfs recommended) [shared with settings-controller.rc]
+temporary_directory='./tmp'
 temporary_directory_clear_on_start='true'
 
-# Log settings
+# Log settings [shared with settings-controller.rc]
 log_enabled='true'
 log_date_format='+%Y.%M.%d %H:%M:%S'
 log_file='' # log to console if empty
