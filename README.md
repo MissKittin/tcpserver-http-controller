@@ -27,7 +27,7 @@ Made for fun
 * **renderFile file mime code** render page and print it
 * **log 'message content'** print to console (stderr)
 * **readFile path/to/file** cat replacement for plain text files
-* **readStream << EOF ** cat replacement for streams and pipes
+* **readStream << EOF** cat replacement for streams and pipes
 * **dirNameOf path/to/file** dirname replacement
 
 ### Variables
